@@ -28,7 +28,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/tabulator-tables/dist/css/bulma/tabulator_bulma.min.css"
             ],
             "scripts": []
           },
