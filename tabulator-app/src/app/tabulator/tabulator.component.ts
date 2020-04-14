@@ -43,6 +43,14 @@ export class TabulatorComponent implements OnInit, AfterViewInit, OnChanges, OnD
     columnMinWidth: 60,
     paginationSize: 100,
     paginationSizeSelector: [100, 250, 500],
+    ajaxRequesting: (url, params) => {
+      // Set any default universal params here
+      if (this.additionalTableConfigs['ajaxParams']) {
+        for (const property of Object.keys(this.additionalTableConfigs['ajaxParams'])) {
+          params[property] = this.additionalTableConfigs['ajaxParams'][property];
+        }
+      }
+    },
     ajaxResponse: (url, params, responseData) => {
       /*
         When we get a response from a remote API call, check if there is additionalTableConfigs.
@@ -88,9 +96,10 @@ export class TabulatorComponent implements OnInit, AfterViewInit, OnChanges, OnD
       this.myTable.clearData();
     },
     dataLoaded: () => {
+      // Set the total result count in the footer
       this.setFooterResultsCount(this.resultCount);
     }
-  }
+  };
 
   constructor() { }
 
@@ -117,8 +126,8 @@ export class TabulatorComponent implements OnInit, AfterViewInit, OnChanges, OnD
       // If the columnNames in changes are not the same then update the table with the new columnNames
       this.myTable.setColumns(this.columnNames);
     }
-    // Update the table with any new data or API url, and provide the ajaxParams
-    this.myTable.setData(this.tableConfigs.data, this.additionalTableConfigs['ajaxParams']);
+    // Update the table with any new data or API url
+    this.myTable.setData(this.tableConfigs.data);
   }
 
   private initTable(): void {
@@ -158,7 +167,14 @@ export class TabulatorComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     // If there are additionalTableConfigs then assign them to the dynamicTableProperties Object
     if (this.additionalTableConfigs) {
-      Object.assign(this.dynamicTableProperties, this.additionalTableConfigs);
+      for (const property in this.additionalTableConfigs) {
+        if (property !== 'ajaxParams') {
+          /*
+            Add any additional configs to the table except ajaxParams. These will be added in the ajaxRequesting callback
+          */
+          this.dynamicTableProperties[property] = this.additionalTableConfigs[property];
+        }
+      }
     }
   }
 
@@ -167,7 +183,7 @@ export class TabulatorComponent implements OnInit, AfterViewInit, OnChanges, OnD
     const ajaxConfigs: AjaxConfigs = {
       method: 'get',
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/json; charset=utf-8'
         // Add Authorization here if you need it
       }
     };
