@@ -32,60 +32,43 @@
     align-items: center;
   }
 
-  .flex-container {
-    display: flex;
-    flex-direction: row;
-  }
-
   .table-container {
     border: 1px solid #d4d4d4;
     margin-top: 10px;
   }
 
-  .local-table {
-    width: 70%;
+  .clear-btn {
+    border-radius: 0;
+    width: 100px;
+    height: 30px;
+    font-size: 16px;
+    color: white;
+    background: #1976d2;
   }
-
   .card-container {
-    text-align: center;
-    width: 100%;
+    padding: 10px 0;
   }
-
-  .p-1 {
-    padding: 0.5rem;
-  }
-
-  /* .example {
+  .card-row {
+    margin-top: 10px;
     display: flex;
     flex-direction: row;
   }
-
-  .card {
-    width: 100%;
-    margin: 0 10px;
+  .card-image {
+    width: 300px;
   }
-  .shadow {
-    box-shadow: 1px 1px 5px rgba(1, 1, 1, 0.3);
+  .card-details {
+    padding: 0 10px;
+    max-width: 500px;
   }
-  .text-center {
-    text-align: center;
+  .card-artist {
+    margin-bottom: 0;
   }
-  .card-container {
-    padding: 10px;
-  }
-  .card-figure {
-    margin: 5px auto;
-    max-width: 250px;
-  }
-  figcaption {
-    text-align: center;
-  }
-  small {
+  .card-set {
+    font-size: 14px;
     font-style: italic;
+    color: #747474;
+    margin-bottom: 10px;
   }
-  .p-2 {
-    padding: 0.5rem;
-  } */
 </style>
 
 <div class="content" role="main">
@@ -100,49 +83,37 @@
 </div>
 
 <div>
-  <div class="flex-container">
-    <div class="table-container local-table">
-      <app-tabulator
-        *ngIf="
-          exampleLocalColumnNames &&
-          exampleLocalTableConfigs &&
-          exampleLocalAdditionalTableConfigs
-        "
-        [columnNames]="exampleLocalColumnNames"
-        [tableConfigs]="exampleLocalTableConfigs"
-        [additionalTableConfigs]="exampleLocalAdditionalTableConfigs"
-        [resultCount]="exampleLocalResultCount"
-      ></app-tabulator>
-    </div>
-    <div class="card-container">
-      <p >Select a Row to See A Card</p>
-      <div *ngIf="selectedCard">
-        <div class="p-1">
-          <button (click)="clearCard()">Clear Card</button>
-        </div>
-        <div>
-          <figure class="card-figure">
-            <img src="{{ selectedCard?.imageUrl }}" />
-            <figcaption>Artist: {{ selectedCard?.artist }}</figcaption>
-          </figure>
-          <div>
-            <p>{{ selectedCard?.text }}</p>
-            <small>{{ selectedCard?.flavor }}</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <p>Select a Row to See A Card</p>
   <div class="table-container">
     <app-tabulator
       *ngIf="
-        exampleRemoteColumnNames &&
-        exampleRemoteTableConfigs &&
-        exampleRemoteAdditionalTableConfigs
+        exampleLocalColumnNames &&
+        exampleLocalTableConfigs &&
+        exampleLocalAdditionalTableConfigs
       "
-      [columnNames]="exampleRemoteColumnNames"
-      [tableConfigs]="exampleRemoteTableConfigs"
-      [additionalTableConfigs]="exampleRemoteAdditionalTableConfigs"
+      [columnNames]="exampleLocalColumnNames"
+      [tableConfigs]="exampleLocalTableConfigs"
+      [additionalTableConfigs]="exampleLocalAdditionalTableConfigs"
+      [resultCount]="exampleLocalResultCount"
     ></app-tabulator>
+  </div>
+  <div *ngIf="selectedCard" class="card-container">
+    <button class="clear-btn" (click)="clearCard()">Clear Card</button>
+    <div class="card-row">
+      <div class="card-column">
+        <img class="card-image" src="{{ selectedCard?.image_uris?.normal }}" />
+      </div>
+      <div class="card-details">
+        <h2 class="card-artist">Artist: {{ selectedCard?.artist }}</h2>
+        <p class="card-set">
+          Set: {{ selectedCard?.set_name }} Type: {{ selectedCard?.set_type }}
+        </p>
+        <p class="card-description">
+          Description: {{ selectedCard?.oracle_text }}
+        </p>
+        <hr />
+        <p class="card-flavor">{{ selectedCard?.flavor_text }}</p>
+      </div>
+    </div>
   </div>
 </div>

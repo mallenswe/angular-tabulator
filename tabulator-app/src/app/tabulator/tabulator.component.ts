@@ -38,7 +38,7 @@ export class TabulatorComponent implements OnInit, AfterViewInit, OnChanges, OnD
   public dynamicTableProperties: Object = {
     ajaxLoaderLoading: '',
     placeholder: 'No Data Available',
-    height: 100,
+    height: '50vh',
     layout: 'fitColumns',
     columnMinWidth: 60,
     paginationSize: 100,

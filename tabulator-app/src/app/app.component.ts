@@ -67,11 +67,50 @@ export class AppComponent implements OnInit {
       http://tabulator.info/docs/4.6/columns
     */
     this.exampleLocalColumnNames = [
-      { title: 'Name', field: 'name' },
-      { title: 'Mana Cost', field: 'manaCost' },
-      { title: 'Type', field: 'type' },
-      { title: 'Rarity', field: 'rarity' },
-      { title: 'Set', field: 'setName' },
+      {
+        title: 'Name',
+        field: 'name',
+        headerFilter: true,
+        headerFilterPlaceholder: 'Name...'
+      },
+      {
+        title: 'Cost',
+        field: 'cmc',
+        hozAlign: 'left',
+        formatter: 'progress',
+        formatterParams: {
+          min: 0,
+          max: 10,
+        },
+        width: 150
+      },
+      {
+        title: 'Mana',
+        field: 'mana_cost',
+        hozAlign: 'left',
+        formatterParams: {
+          height: '50px',
+          width: '50px',
+        },
+        formatter: (cell, formatterParams, onRendered) => this.manaImages(cell, formatterParams, onRendered),
+        width: 150
+      },
+      {
+        title: 'Type',
+        field: 'type_line',
+        headerFilter: true,
+        headerFilterPlaceholder: 'Type...'
+      },
+      {
+        title: 'Rarity',
+        field: 'rarity',
+        width: 150
+      },
+      {
+        title: 'Set',
+        field: 'set_name',
+        width: 150
+      },
     ];
   }
 
@@ -84,7 +123,8 @@ export class AppComponent implements OnInit {
       See: Tabulator.Component.ts Line 156
     */
     this.mtgService.getLocalMTGCards().subscribe(response => {
-      this.exampleLocalData = response.cards;
+      console.log('mtg response: ', response);
+      this.exampleLocalData = response.data;
       this.exampleLocalResultCount = this.exampleLocalData.length;
 
       this.exampleLocalTableConfigs = {
@@ -106,9 +146,9 @@ export class AppComponent implements OnInit {
         ETC.
     */
     this.exampleLocalAdditionalTableConfigs = {
-      height: 460,
-      paginationSize: 15,
-      paginationSizeSelector: [15, 30, 60],
+      height: 350,
+      paginationSize: 10,
+      paginationSizeSelector: [10, 50, 100],
       initialSort: [
         { column: 'rarity', dir: 'desc' }
       ],
@@ -119,62 +159,17 @@ export class AppComponent implements OnInit {
   private exampleLocalRowClick(e, row): void {
     const rowData = row.getData();
     this.selectedCard = rowData;
-    console.log('this.selectedCard: ', this.selectedCard );
+    console.log('this.selectedCard: ', this.selectedCard);
   }
 
-
-
-  private setRemoteColumnNames(): void {
-    /*
-      Define the columns you need based on the Tabulator documentation and your data
-      http://tabulator.info/docs/4.6/columns
-    */
-    this.exampleRemoteColumnNames = [
-        { title: 'Name', field: 'name' },
-        { title: 'Mana Cost', field: 'manaCost' },
-        { title: 'Type', field: 'type' },
-        { title: 'Rarity', field: 'rarity' },
-        { title: 'Set', field: 'setName' },
-    ];
+  private manaImages(cell, formatterParams, onRendered) {
+    const cellData = cell.getData();
+    const manaSymbolArray = cellData['mana_cost'].split('}');
+    console.log('manaSymbolArray: ', manaSymbolArray);
+    console.log('mana images cell: ', cell.getData()['mana_cost']);
+    console.log('mana images formatterParams: ', formatterParams);
+    console.log('mana images onRendered: ', onRendered);
   }
-
-  private setRemoteTableConfigs(): void {
-    /*
-      REQUIRED
-      These configs are needed by default by Tabulator
-      This is a REMOTE table so we need to supply an API URL string.
-      isRemotePagination is true, this tells the Tabulator Component to make a remote pagination request
-      See: Tabulator.Component.ts Line 146
-    */
-    this.exampleRemoteTableConfigs = {
-      tableId: 'example-remote-table',
-      isRemotePagination: true,
-      data: this.mtgService.getRemoteMTGCards()
-    };
-  }
-
-  private setRemoteAdditionalTableConfigs(): void {
-    /*
-      Define any specific Configurations you need for your table based on Tabulators Documentation
-      Examples:
-        Styling - http://tabulator.info/docs/4.6/layout
-        Callbacks - http://tabulator.info/docs/4.6/callbacks
-        PaginationDataReceived - http://tabulator.info/docs/4.6/page#remote-response
-        Initial Sorting - http://tabulator.info/docs/4.6/sort#intial
-        ETC.
-    */
-    this.exampleRemoteAdditionalTableConfigs = {
-      initialSort: [
-        { column: 'name', dir: 'desc' }
-      ],
-      rowClick: (e, row) => this.exampleRemoteRowClick(e, row)
-    };
-  }
-
-  private exampleRemoteRowClick(e, row): void {
-
-  }
-
 
   public clearCard(): void {
     this.selectedCard = null;
